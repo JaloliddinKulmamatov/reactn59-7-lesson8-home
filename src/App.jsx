@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import axios from "axios";
 import api from "./api/posts";
+import { tr } from "date-fns/locale";
 
 function App() {
   const [posts, setPosts] = useState([]);
@@ -77,6 +78,7 @@ function App() {
   };
 
   const handleDelete = async (id) => {
+    setNewPostLoading(true)
     try {
       await axios.delete(
         `${api}/${id}`
@@ -87,6 +89,9 @@ function App() {
       navigate("/");
     } catch (error) {
       console.error("Failed to delete the post:", error);
+    }
+    finally {
+    setNewPostLoading(false);
     }
   };
 
@@ -111,7 +116,7 @@ function App() {
         />
         <Route
           path="/post/:id"
-          element={<PostPage posts={posts} handleDelete={handleDelete} />}
+          element={<PostPage posts={posts} loading={newPostLoading} handleDelete={handleDelete} />}
         />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<Missing />} />
